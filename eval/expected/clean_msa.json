@@ -1,0 +1,7 @@
+{
+  "route": "REVIEW_FASTTRACK",
+  "overall": "low",
+  "blocked": false,
+  "interrupt": true,
+  "needs_senior_review": false
+}

@@ -1,0 +1,7 @@
+{
+  "route": "BLOCKED_INJECTION",
+  "blocked": true,
+  "interrupt": false,
+  "injection_flag": true,
+  "overall_in": ["high", "critical"]
+}

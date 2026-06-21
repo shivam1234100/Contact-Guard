@@ -1,0 +1,7 @@
+{
+  "overall_in": ["high", "critical"],
+  "blocked": false,
+  "interrupt": true,
+  "min_redlines": 2,
+  "needs_senior_review": true
+}

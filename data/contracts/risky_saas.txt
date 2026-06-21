@@ -1,0 +1,21 @@
+SAAS SUBSCRIPTION AGREEMENT
+
+This SaaS Subscription Agreement is entered into by and between CloudVendor Inc and Customer Co, effective as of February 1, 2026.
+
+1. Limitation of Liability
+The Provider's liability under this Agreement shall be unlimited and uncapped, and the Provider shall not be limited in any amount for damages of any kind, including indirect and consequential damages.
+
+2. Indemnification
+Customer shall indemnify, defend, and hold harmless Provider from any and all claims, damages, and losses of every kind arising out of Customer's use of the services, without limitation.
+
+3. Auto-Renewal
+This Agreement shall automatically renew for successive 36 month periods unless Customer provides written notice of non-renewal, and the renewal term shall continue on an evergreen basis.
+
+4. Data Protection
+Provider may process and store personal data of Customer's end users in order to provide and improve the services, including transferring such data to third parties.
+
+5. Confidentiality
+Each party shall keep the other party's Confidential Information confidential during the term of this Agreement.
+
+6. Governing Law
+This Agreement shall be governed by the laws of the State of New York.

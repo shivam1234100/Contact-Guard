@@ -1,0 +1,6 @@
+{
+  "route": "BLOCKED_INTAKE",
+  "blocked": true,
+  "interrupt": false,
+  "error": true
+}

@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# Env / secrets
+.env
+
+# Outbox: mock "sent" emails & exported redlines (runtime artifacts)
+outbox/*
+!outbox/.gitkeep
+
+# Tooling
+.pytest_cache/
+.DS_Store
+.ipynb_checkpoints/
+
+# LangGraph / cache
+.langgraph_api/
+*.sqlite
