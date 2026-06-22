@@ -105,6 +105,18 @@ python run.py data/contracts/risky_saas.txt --reject  # reject at the gate
 streamlit run app/streamlit_app.py
 ```
 
+### Run on LangGraph Platform / Studio
+The repo ships a `langgraph.json` (entry point `graph/build.py:make_graph`), so it
+runs on the LangGraph runtime directly:
+```bash
+pip install "langgraph-cli[inmem]"
+cp .env.example .env          # mock mode, no keys needed
+langgraph dev                 # API at http://127.0.0.1:2024 + LangGraph Studio
+```
+In Studio you can submit a contract, watch each node run, see the graph **pause at
+`human_approval`**, and resume with `{"decision": "approved"}`. Managed cloud
+deploy steps (LangSmith → Deployments) are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
 ### Mock vs. live mode
 | | Mock (default, no key) | Live (`OPENAI_API_KEY` set) |
 |---|---|---|

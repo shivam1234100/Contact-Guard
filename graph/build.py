@@ -144,9 +144,8 @@ def default_checkpointer() -> MemorySaver:
     return MemorySaver(serde=serde)
 
 
-def build_graph(checkpointer=None):
-    """Compile the ContractGuard graph. A checkpointer is required for interrupts;
-    defaults to an in-memory one."""
+def _new_builder() -> StateGraph:
+    """Construct the (uncompiled) StateGraph: nodes, edges, conditional routing."""
     builder = StateGraph(ContractState)
 
     builder.add_node("intake", intake_node)
@@ -171,7 +170,23 @@ def build_graph(checkpointer=None):
     builder.add_edge("human_approval", "send")
     builder.add_edge("send", END)
     builder.add_edge("blocked", END)
+    return builder
 
-    return builder.compile(
+
+def build_graph(checkpointer=None):
+    """Compile the graph for local use (CLI, Streamlit, eval).
+
+    A checkpointer is required for interrupts; defaults to an in-memory one.
+    """
+    return _new_builder().compile(
         checkpointer=checkpointer if checkpointer is not None else default_checkpointer()
     )
+
+
+def make_graph():
+    """Entry point for **LangGraph Platform** / ``langgraph dev`` (see langgraph.json).
+
+    The platform supplies its own durable persistence, so we compile WITHOUT a
+    checkpointer here — passing one would conflict with the platform-managed store.
+    """
+    return _new_builder().compile()
