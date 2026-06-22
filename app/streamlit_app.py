@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import os
 import sys
+import traceback
 import uuid
 
 # Make the project root importable when launched as app/streamlit_app.py.
@@ -56,24 +57,32 @@ def _reset_run():
 
 
 def _run_until_gate(text: str, name: str, sender_email: str):
-    reviewer = st.session_state.get("reviewer", "reviewer")
-    graph = build_graph()
-    config = {"configurable": {"thread_id": f"{name}-{uuid.uuid4().hex[:8]}"}}
-    graph.invoke(initial_state(text, name, reviewer, sender_email), config)
-    snap = graph.get_state(config)
-    st.session_state.graph = graph
-    st.session_state.config = config
-    st.session_state.state = snap.values
-    st.session_state.interrupted = bool(snap.next)
-    st.session_state.stage = "review" if snap.next else "blocked"
+    try:
+        reviewer = st.session_state.get("reviewer", "reviewer")
+        graph = build_graph()
+        config = {"configurable": {"thread_id": f"{name}-{uuid.uuid4().hex[:8]}"}}
+        graph.invoke(initial_state(text, name, reviewer, sender_email), config)
+        snap = graph.get_state(config)
+        st.session_state.graph = graph
+        st.session_state.config = config
+        st.session_state.state = snap.values
+        st.session_state.interrupted = bool(snap.next)
+        st.session_state.stage = "review" if snap.next else "blocked"
+    except Exception:
+        st.session_state.error_tb = traceback.format_exc()
+        st.session_state.stage = "error"
 
 
 def _resume(decision: dict):
-    graph = st.session_state.graph
-    config = st.session_state.config
-    graph.invoke(Command(resume=decision), config)
-    st.session_state.state = graph.get_state(config).values
-    st.session_state.stage = "done"
+    try:
+        graph = st.session_state.graph
+        config = st.session_state.config
+        graph.invoke(Command(resume=decision), config)
+        st.session_state.state = graph.get_state(config).values
+        st.session_state.stage = "done"
+    except Exception:
+        st.session_state.error_tb = traceback.format_exc()
+        st.session_state.stage = "error"
 
 
 def render_stepper(state: dict, active: str | None = None):
@@ -361,3 +370,25 @@ if stage == "done":
     with st.expander("📜 Full audit log", expanded=True):
         for entry in state.get("audit_log", []):
             st.text(entry)
+
+
+# --------------------------------------------------------------------------- #
+# Stage: error (surface the real, non-redacted error for debugging)
+# --------------------------------------------------------------------------- #
+if stage == "error":
+    st.header("⚠️ Pipeline error")
+    try:
+        from importlib.metadata import version
+        st.caption(
+            f"langgraph={version('langgraph')} · "
+            f"langgraph-checkpoint={version('langgraph-checkpoint')} · "
+            f"langchain-core={version('langchain-core')} · "
+            f"pydantic={version('pydantic')} · python={sys.version.split()[0]}"
+        )
+    except Exception:
+        pass
+    st.error("The run failed. Full traceback (please screenshot this):")
+    st.code(st.session_state.get("error_tb", "(no traceback captured)"))
+    if st.button("← Back", type="primary"):
+        st.session_state.stage = "input"
+        st.rerun()
