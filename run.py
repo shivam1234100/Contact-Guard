@@ -19,11 +19,17 @@ from graph.build import build_graph
 from tools.contract_parser import read_contract_file
 
 
-def initial_state(text: str, name: str, reviewer: str = "CLI reviewer") -> dict:
+def initial_state(
+    text: str,
+    name: str,
+    reviewer: str = "CLI reviewer",
+    sender_email: str = "sender@counterparty.example.com",
+) -> dict:
     return {
         "contract_text": text,
         "contract_name": name,
         "reviewer": reviewer,
+        "sender_email": sender_email or "sender@counterparty.example.com",
         "audit_log": [],
         "errors": [],
         "compliance": [],
@@ -31,7 +37,15 @@ def initial_state(text: str, name: str, reviewer: str = "CLI reviewer") -> dict:
     }
 
 
-def run_contract(text, name, decision=None, graph=None, thread_id=None, reviewer="CLI reviewer"):
+def run_contract(
+    text,
+    name,
+    decision=None,
+    graph=None,
+    thread_id=None,
+    reviewer="CLI reviewer",
+    sender_email="sender@counterparty.example.com",
+):
     """Run a contract end-to-end.
 
     Returns ``(final_state, interrupted, graph, config)``. If the graph pauses at
@@ -41,7 +55,7 @@ def run_contract(text, name, decision=None, graph=None, thread_id=None, reviewer
     thread_id = thread_id or f"{name}-{uuid.uuid4().hex[:8]}"
     config = {"configurable": {"thread_id": thread_id}}
 
-    result = graph.invoke(initial_state(text, name, reviewer), config)
+    result = graph.invoke(initial_state(text, name, reviewer, sender_email), config)
     interrupted = bool(graph.get_state(config).next) or "__interrupt__" in result
 
     if interrupted:
@@ -102,6 +116,11 @@ def main():
     ap.add_argument("--name", help="display name (defaults to filename)")
     ap.add_argument("--reject", action="store_true", help="reject at the approval gate")
     ap.add_argument("--reviewer", default="CLI reviewer", help="name/role of the reviewer")
+    ap.add_argument(
+        "--sender-email",
+        default="sender@counterparty.example.com",
+        help="email address the status notification is sent to",
+    )
     args = ap.parse_args()
 
     text = read_contract_file(args.path)
@@ -112,7 +131,9 @@ def main():
         else {"decision": "approved", "notes": "CLI approved"}
     )
 
-    final, interrupted, _, _ = run_contract(text, name, decision=decision, reviewer=args.reviewer)
+    final, interrupted, _, _ = run_contract(
+        text, name, decision=decision, reviewer=args.reviewer, sender_email=args.sender_email
+    )
     print_report(final, interrupted)
 
 

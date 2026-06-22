@@ -55,11 +55,11 @@ def _reset_run():
         st.session_state.pop(k, None)
 
 
-def _run_until_gate(text: str, name: str):
+def _run_until_gate(text: str, name: str, sender_email: str):
     reviewer = st.session_state.get("reviewer", "reviewer")
     graph = build_graph()
     config = {"configurable": {"thread_id": f"{name}-{uuid.uuid4().hex[:8]}"}}
-    graph.invoke(initial_state(text, name, reviewer), config)
+    graph.invoke(initial_state(text, name, reviewer, sender_email), config)
     snap = graph.get_state(config)
     st.session_state.graph = graph
     st.session_state.config = config
@@ -249,13 +249,20 @@ if stage == "input":
         name = os.path.splitext(choice)[0]
 
     text = st.text_area("Contract text", value=default_text, height=320)
+    sender_email = st.text_input(
+        "📧 Sender's email",
+        value="sender@counterparty.example.com",
+        help="The status notification (approved / rejected / flagged) is emailed here.",
+    )
     if st.button("▶ Run review", type="primary"):
-        if text.strip():
-            with st.spinner("Running 5 agents…"):
-                _run_until_gate(text, name)
-            st.rerun()
-        else:
+        if not text.strip():
             st.warning("Paste or load a contract first.")
+        elif "@" not in (sender_email or ""):
+            st.warning("Enter a valid sender email for the status notification.")
+        else:
+            with st.spinner("Running 5 agents…"):
+                _run_until_gate(text, name, sender_email.strip())
+            st.rerun()
 
 
 # --------------------------------------------------------------------------- #
@@ -303,6 +310,10 @@ if stage == "blocked":
     st.header(f"Blocked — {state.get('contract_name')}")
     render_stepper(state)
     st.error(f"🚫 Pipeline refused to proceed · route = **{state.get('route')}**. No external action taken.")
+    st.info(
+        f"📨 Sender notified at **{state.get('sender_email', 'sender@counterparty.example.com')}** "
+        "— status: flagged / on hold for manual review."
+    )
     if state.get("errors"):
         for e in state["errors"]:
             st.code(e)
@@ -338,7 +349,8 @@ if stage == "done":
         body = f"Your contract '{name}' was reviewed and we are unable to proceed as currently drafted."
 
     st.subheader("📨 Decision notification sent to the sender")
-    st.text(f"To: sender@counterparty.example.com\nSubject: {subject}\n\n{body}")
+    to_addr = state.get("sender_email", "sender@counterparty.example.com")
+    st.text(f"To: {to_addr}\nSubject: {subject}\n\n{body}")
 
     if state.get("record_path"):
         st.subheader("🗄️ Compliance audit record")

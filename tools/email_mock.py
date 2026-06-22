@@ -52,7 +52,15 @@ def send_decision_notice(
             f"approved to proceed with {redlines} proposed redline(s), which are "
             "attached for your acceptance.\n\nBest regards,\nContracts Team"
         )
-    else:
+    elif decision == "blocked":
+        subject = f"Contract review — ON HOLD / FLAGGED: {contract_name}"
+        body = (
+            f"Dear sender,\n\nYour contract '{contract_name}' could not be processed "
+            "automatically and has been flagged for manual review by our team."
+            + (f" Note: {reason}." if reason else "")
+            + "\n\nWe will follow up with you shortly.\n\nBest regards,\nContracts Team"
+        )
+    else:  # rejected
         subject = f"Contract review complete — NOT APPROVED: {contract_name}"
         body = (
             f"Dear sender,\n\nYour contract '{contract_name}' has been reviewed and "

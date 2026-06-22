@@ -58,8 +58,8 @@ graph TD;
     human_approval -.approved.-> send;
     human_approval -.rejected.-> notify;
     send --> notify;
+    blocked --> notify;
     notify --> record;
-    blocked --> record;
     record --> __end__;
     classDef first fill-opacity:0
     classDef last fill:#bfb6fc

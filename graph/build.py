@@ -136,14 +136,22 @@ def session_start_node(state: ContractState) -> dict:
 
 
 def notify_node(state: ContractState) -> dict:
-    """Email the contract sender the outcome — on BOTH approval and rejection."""
-    approvals = state.get("approvals", [])
-    verdict = approvals[-1].decision if approvals else "rejected"
+    """Email the contract sender the outcome — on approval, rejection, OR block.
+
+    The recipient is the sender email entered in the UI (falls back to a default)."""
+    to = state.get("sender_email") or "sender@counterparty.example.com"
     name = state.get("contract_name", "contract")
+
+    if state.get("blocked"):
+        verdict = "blocked"
+    else:
+        approvals = state.get("approvals", [])
+        verdict = approvals[-1].decision if approvals else "rejected"
+
     report = state.get("risk_report")
-    reason = report.summary if (verdict == "rejected" and report) else ""
+    reason = report.summary if (verdict in ("rejected", "blocked") and report) else ""
     rec = send_decision_notice(
-        "sender@counterparty.example.com",
+        to,
         name,
         verdict,
         redlines=len(state.get("redlines", [])),
@@ -238,8 +246,8 @@ def _new_builder() -> StateGraph:
         "human_approval", route_after_decision, {"send": "send", "notify": "notify"}
     )
     builder.add_edge("send", "notify")
+    builder.add_edge("blocked", "notify")
     builder.add_edge("notify", "record")
-    builder.add_edge("blocked", "record")
     builder.add_edge("record", END)
     return builder
 

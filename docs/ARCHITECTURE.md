@@ -17,12 +17,16 @@ A LangGraph `StateGraph[ContractState]` compiled with an in-memory checkpointer
 (required for interrupts). Nodes:
 
 ```
-START → session_start → intake ─(blocked?)→ blocked → record → END
-              └→ retrieval → analysis → guardrail ─(blocked?)→ blocked → record → END
+START → session_start → intake ─(blocked?)→ blocked → notify → record → END
+              └→ retrieval → analysis → guardrail ─(blocked?)→ blocked → notify → record → END
                               └→ redline → human_approval ⏸
                                      ├─(approved)→ send → notify → record → END
                                      └─(rejected)──────→ notify → record → END
 ```
+
+The **`notify`** step emails the contract sender (the address entered in the UI)
+the outcome — approved, rejected, *or* flagged/blocked — so every status closes
+the loop with the sender.
 
 The **5 agents** are `intake`, `retrieval`, `analysis`, `guardrail`, `redline`.
 The other nodes are **supervisor / orchestration steps** (the architecture is

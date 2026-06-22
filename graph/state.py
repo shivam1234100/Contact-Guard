@@ -172,6 +172,7 @@ class ContractState(TypedDict, total=False):
     contract_text: str
     contract_name: str
     reviewer: str  # who is running the review (from the UI login); defaults set by callers
+    sender_email: str  # where the status notification is emailed (the contract sender)
 
     # --- pipeline artifacts ---
     parsed: Optional[ParsedContract]
