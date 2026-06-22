@@ -86,9 +86,19 @@ class VectorStore:
         if not self.texts:
             return
         if self.mode == "live":
-            self.matrix = self._embed_live(self.texts)
-        else:
-            self.matrix = self._fit_tfidf(self.texts)
+            try:
+                self.matrix = self._embed_live(self.texts)
+                return
+            except Exception as exc:
+                # Degrade gracefully: a live-embedding failure (bad key, no
+                # quota, network) must not crash retrieval — fall back to the
+                # deterministic TF-IDF retriever instead.
+                print(
+                    f"[vector_store] live embeddings unavailable "
+                    f"({type(exc).__name__}); falling back to TF-IDF retrieval"
+                )
+                self.mode = "mock"
+        self.matrix = self._fit_tfidf(self.texts)
 
     # ----- live embeddings -----
     def _embed_live(self, texts: List[str]) -> np.ndarray:
@@ -142,11 +152,16 @@ class VectorStore:
         """Return up to ``k`` (source, snippet, score) tuples, best first."""
         if self.matrix is None or not self.texts:
             return []
-        qv = (
-            self._embed_query_live(query)
-            if self.mode == "live"
-            else self._embed_query_mock(query)
-        )
+        try:
+            qv = (
+                self._embed_query_live(query)
+                if self.mode == "live"
+                else self._embed_query_mock(query)
+            )
+        except Exception:
+            # A live query-embedding failure degrades to "no evidence" rather
+            # than crashing the retrieval node.
+            return []
         scores = self.matrix @ qv
         order = np.argsort(-scores)
         out: List[Tuple[str, str, float]] = []
