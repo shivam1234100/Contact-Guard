@@ -115,7 +115,7 @@ langgraph dev                 # API at http://127.0.0.1:2024 + LangGraph Studio
 ```
 In Studio you can submit a contract, watch each node run, see the graph **pause at
 `human_approval`**, and resume with `{"decision": "approved"}`. Managed cloud
-deploy steps (LangSmith → Deployments) are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+deploy is also supported via LangSmith → Deployments.
 
 ### Mock vs. live mode
 | | Mock (default, no key) | Live (`OPENAI_API_KEY` set) |
@@ -194,7 +194,7 @@ contractguard/
 │   └── streamlit_app.py       · demo UI with the approve/reject gate
 ├── outbox/                    · mock "sent" emails + exported redlines (gitignored)
 └── docs/
-    ├── ARCHITECTURE.md  DEPLOYMENT.md
+    ├── ARCHITECTURE.md
     └── individual_contributions/   · one .md per member
 ```
 
@@ -214,5 +214,4 @@ contractguard/
 | Demo quality | 10% | runs end-to-end on samples; Streamlit approve/reject gate |
 | Individual contribution | 15% | `docs/individual_contributions/` — one component per member |
 
-See **`docs/ARCHITECTURE.md`** for design detail and **`docs/DEPLOYMENT.md`** to
-deploy and to create the GitHub repo.
+See **`docs/ARCHITECTURE.md`** for design detail.
