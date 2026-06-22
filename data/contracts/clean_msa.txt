@@ -1,21 +1,42 @@
 MASTER SERVICES AGREEMENT
 
-This Master Services Agreement ("Agreement") is entered into by and between Acme Corp and Beta LLC, effective as of January 1, 2026.
+This Master Services Agreement ("Agreement") is entered into as of January 1, 2026 (the "Effective Date") by and between Acme Corporation, a Delaware corporation having its principal place of business at 100 Market Street, Wilmington, DE ("Provider"), and Beta Industries LLC, a company organized under the laws of California ("Customer"). Provider and Customer are each a "Party" and together the "Parties."
 
-1. Limitation of Liability
-Each party's aggregate liability arising out of or related to this Agreement shall not exceed the total fees paid in the twelve (12) months preceding the claim. Neither party shall be liable for indirect, incidental, or consequential damages.
+RECITALS
 
-2. Indemnification
-Each party shall indemnify and hold the other harmless against third-party claims arising from its breach of confidentiality obligations or its infringement of intellectual property rights. These indemnification obligations are mutual and subject to the limitation of liability above.
+WHEREAS, Provider is engaged in the business of providing professional software implementation and consulting services; and
+
+WHEREAS, Customer wishes to engage Provider to perform such services on the terms and conditions set out below;
+
+NOW, THEREFORE, in consideration of the mutual covenants contained herein, the Parties agree as follows:
+
+1. Services
+Provider shall perform the professional services described in one or more mutually executed Statements of Work ("SOWs"). Each SOW shall be governed by the terms of this Agreement. Provider shall perform the services in a professional and workmanlike manner consistent with industry standards.
+
+2. Fees and Payment
+In consideration of the services, Customer shall pay the fees set out in the applicable SOW. Provider shall invoice Customer monthly, and Customer shall pay all undisputed fees within net thirty (30) days of the invoice date. Late amounts accrue interest at one percent (1%) per month.
 
 3. Confidentiality
-Each party shall protect the other party's Confidential Information using no less than reasonable care, and shall not disclose such proprietary information for a period of three (3) years following disclosure.
+Each Party shall protect the other Party's Confidential Information using no less than reasonable care, shall use it solely to perform this Agreement, and shall not disclose such proprietary information to any third party. These confidentiality obligations survive for a period of three (3) years following disclosure.
 
-4. Termination
-Either party may terminate this Agreement for material breach upon thirty (30) days' written notice if the breach remains uncured, and may terminate for convenience upon sixty (60) days' written notice.
+4. Limitation of Liability
+Except for breaches of confidentiality, each Party's aggregate liability arising out of or related to this Agreement shall not exceed the total fees paid or payable by Customer in the twelve (12) months preceding the event giving rise to the claim. In no event shall either Party be liable for indirect, incidental, special, or consequential damages.
 
-5. Governing Law
-This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict-of-laws principles.
+5. Indemnification
+Each Party shall indemnify, defend, and hold the other Party harmless from and against third-party claims arising from its breach of its confidentiality obligations or its infringement of a third party's intellectual property rights. These indemnification obligations are mutual and are subject to the limitation of liability set forth in Section 4.
 
-6. Payment
-Customer shall pay all undisputed fees within net thirty (30) days of the invoice date.
+6. Term and Termination
+This Agreement commences on the Effective Date and continues until terminated. Either Party may terminate this Agreement for material breach upon thirty (30) days' written notice if the breach remains uncured, and may terminate for convenience upon sixty (60) days' prior written notice.
+
+7. Governing Law
+This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict-of-laws principles. The Parties consent to the exclusive jurisdiction of the state and federal courts located in Delaware.
+
+8. General
+This Agreement constitutes the entire agreement between the Parties and supersedes all prior understandings. Any amendment must be in writing and signed by both Parties. Notices shall be sent to the addresses set out above.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+PROVIDER: Acme Corporation              CUSTOMER: Beta Industries LLC
+By: ______________________              By: ______________________
+Name:                                   Name:
+Title:                                  Title:

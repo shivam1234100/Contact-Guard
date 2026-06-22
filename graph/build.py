@@ -2,17 +2,18 @@
 together with conditional routing, a checkpointer, and a human-in-the-loop
 interrupt before any external action.
 
-Graph shape:
+Graph shape (5 agents + supervisor orchestration steps):
 
     START
-      └─> intake ──(blocked?)──> blocked ─> END
-            └─> retrieval ─> analysis ─> guardrail ──(blocked?)──> blocked ─> END
+      └─> session_start ─> intake ──(blocked?)──> blocked ─> record ─> END
+            └─> retrieval ─> analysis ─> guardrail ──(blocked?)──> blocked ─> record ─> END
                                               └─> redline ─> human_approval (interrupt)
-                                                                  └─> send ─> END
+                                                     └─(approved)─> send ─> notify ─> record ─> END
+                                                     └─(rejected)──────────> notify ─> record ─> END
 
-The three orchestration nodes (``human_approval``, ``send``, ``blocked``) live
-here because they are the supervisor's responsibility, not an agent's.
-Owner: M1 (tech lead).
+The orchestration nodes (``session_start``, ``human_approval``, ``send``,
+``notify``, ``record``, ``blocked``) are the supervisor's responsibility, not an
+agent's — the architecture stays at 5 agents. Owner: M1 (tech lead).
 """
 from __future__ import annotations
 
@@ -28,9 +29,18 @@ from agents.guardrail import guardrail_node
 from agents.intake import intake_node
 from agents.redline import redline_node
 from agents.retrieval import retrieval_node
-from graph.routing import route_after_guardrail, route_after_intake
-from graph.state import Approval, ContractState
-from tools.email_mock import export_redlines, send_email
+from graph.routing import (
+    route_after_decision,
+    route_after_guardrail,
+    route_after_intake,
+)
+from graph.state import Approval, ContractState, DecisionRecord
+from tools.email_mock import (
+    archive_record,
+    export_redlines,
+    send_decision_notice,
+    send_email,
+)
 
 
 def human_approval_node(state: ContractState) -> dict:
@@ -119,6 +129,58 @@ def blocked_node(state: ContractState) -> dict:
     }
 
 
+def session_start_node(state: ContractState) -> dict:
+    """Open the review session and stamp who is reviewing (from the UI login)."""
+    reviewer = state.get("reviewer") or "system"
+    return {"audit_log": [f"[session] review session opened by {reviewer}"]}
+
+
+def notify_node(state: ContractState) -> dict:
+    """Email the contract sender the outcome — on BOTH approval and rejection."""
+    approvals = state.get("approvals", [])
+    verdict = approvals[-1].decision if approvals else "rejected"
+    name = state.get("contract_name", "contract")
+    report = state.get("risk_report")
+    reason = report.summary if (verdict == "rejected" and report) else ""
+    rec = send_decision_notice(
+        "sender@counterparty.example.com",
+        name,
+        verdict,
+        redlines=len(state.get("redlines", [])),
+        reason=reason,
+    )
+    return {
+        "audit_log": [f"[notify] sender emailed: {verdict} -> {rec['to']} (saved {rec['path']})"]
+    }
+
+
+def record_node(state: ContractState) -> dict:
+    """Archive a compliance audit record of the final outcome (approved/rejected/blocked)."""
+    approvals = state.get("approvals", [])
+    if state.get("blocked"):
+        decision = "blocked"
+    elif approvals:
+        decision = approvals[-1].decision
+    else:
+        decision = "rejected"
+    report = state.get("risk_report")
+    record = DecisionRecord(
+        contract=state.get("contract_name", "contract"),
+        decision=decision,  # type: ignore[arg-type]
+        reviewer=state.get("reviewer") or "system",
+        overall_risk=report.overall_risk if report else None,
+        route=state.get("route"),
+        redlines=len(state.get("redlines", [])),
+        timestamp=_dt.datetime.now().isoformat(timespec="seconds"),
+        audit_steps=len(state.get("audit_log", [])),
+    )
+    receipt = archive_record(record.model_dump())
+    return {
+        "record_path": receipt["path"],
+        "audit_log": [f"[record] decision '{decision}' archived -> {receipt['path']}"],
+    }
+
+
 # Pydantic schemas we knowingly store in checkpointed state. Registering them
 # explicitly keeps the checkpoint serializer quiet and forward-compatible
 # (instead of relying on langgraph's permissive "allow everything" default).
@@ -135,6 +197,7 @@ _ALLOWED_STATE_TYPES = [
         "Redline",
         "OutreachDraft",
         "Approval",
+        "DecisionRecord",
     )
 ]
 
@@ -148,6 +211,7 @@ def _new_builder() -> StateGraph:
     """Construct the (uncompiled) StateGraph: nodes, edges, conditional routing."""
     builder = StateGraph(ContractState)
 
+    builder.add_node("session_start", session_start_node)
     builder.add_node("intake", intake_node)
     builder.add_node("retrieval", retrieval_node)
     builder.add_node("analysis", analysis_node)
@@ -155,9 +219,12 @@ def _new_builder() -> StateGraph:
     builder.add_node("redline", redline_node)
     builder.add_node("human_approval", human_approval_node)
     builder.add_node("send", send_node)
+    builder.add_node("notify", notify_node)
+    builder.add_node("record", record_node)
     builder.add_node("blocked", blocked_node)
 
-    builder.add_edge(START, "intake")
+    builder.add_edge(START, "session_start")
+    builder.add_edge("session_start", "intake")
     builder.add_conditional_edges(
         "intake", route_after_intake, {"blocked": "blocked", "retrieval": "retrieval"}
     )
@@ -167,9 +234,13 @@ def _new_builder() -> StateGraph:
         "guardrail", route_after_guardrail, {"blocked": "blocked", "redline": "redline"}
     )
     builder.add_edge("redline", "human_approval")
-    builder.add_edge("human_approval", "send")
-    builder.add_edge("send", END)
-    builder.add_edge("blocked", END)
+    builder.add_conditional_edges(
+        "human_approval", route_after_decision, {"send": "send", "notify": "notify"}
+    )
+    builder.add_edge("send", "notify")
+    builder.add_edge("notify", "record")
+    builder.add_edge("blocked", "record")
+    builder.add_edge("record", END)
     return builder
 
 

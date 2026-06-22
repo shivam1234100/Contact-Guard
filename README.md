@@ -34,6 +34,7 @@ prompt cannot guarantee.
 ```mermaid
 graph TD;
     __start__([start]):::first
+    session(session · login)
     intake(1 · Intake / Parse)
     retrieval(2 · Retrieval / RAG)
     analysis(3 · Risk Analysis)
@@ -41,9 +42,12 @@ graph TD;
     redline(5 · Redline / Outreach)
     human_approval{{Human approval · interrupt}}
     send(send — external action)
+    notify(notify sender)
+    record(audit record)
     blocked(blocked — refuse)
     __end__([end]):::last
-    __start__ --> intake;
+    __start__ --> session;
+    session --> intake;
     intake -.malformed.-> blocked;
     intake -.ok.-> retrieval;
     retrieval --> analysis;
@@ -51,12 +55,19 @@ graph TD;
     guardrail -.injection.-> blocked;
     guardrail -.ok.-> redline;
     redline --> human_approval;
-    human_approval --> send;
-    send --> __end__;
-    blocked --> __end__;
+    human_approval -.approved.-> send;
+    human_approval -.rejected.-> notify;
+    send --> notify;
+    notify --> record;
+    blocked --> record;
+    record --> __end__;
     classDef first fill-opacity:0
     classDef last fill:#bfb6fc
 ```
+
+> **Still 5 agents** (Intake, Retrieval, Analysis, Guardrail, Redline). The
+> `session`, `human_approval`, `send`, `notify`, `record`, and `blocked` nodes are
+> **supervisor/orchestration steps**, not agents.
 
 | # | Agent | Responsibility | Key tools / outputs |
 |---|-------|----------------|---------------------|

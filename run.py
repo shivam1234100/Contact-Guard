@@ -19,10 +19,11 @@ from graph.build import build_graph
 from tools.contract_parser import read_contract_file
 
 
-def initial_state(text: str, name: str) -> dict:
+def initial_state(text: str, name: str, reviewer: str = "CLI reviewer") -> dict:
     return {
         "contract_text": text,
         "contract_name": name,
+        "reviewer": reviewer,
         "audit_log": [],
         "errors": [],
         "compliance": [],
@@ -30,7 +31,7 @@ def initial_state(text: str, name: str) -> dict:
     }
 
 
-def run_contract(text, name, decision=None, graph=None, thread_id=None):
+def run_contract(text, name, decision=None, graph=None, thread_id=None, reviewer="CLI reviewer"):
     """Run a contract end-to-end.
 
     Returns ``(final_state, interrupted, graph, config)``. If the graph pauses at
@@ -40,7 +41,7 @@ def run_contract(text, name, decision=None, graph=None, thread_id=None):
     thread_id = thread_id or f"{name}-{uuid.uuid4().hex[:8]}"
     config = {"configurable": {"thread_id": thread_id}}
 
-    result = graph.invoke(initial_state(text, name), config)
+    result = graph.invoke(initial_state(text, name, reviewer), config)
     interrupted = bool(graph.get_state(config).next) or "__interrupt__" in result
 
     if interrupted:
@@ -100,6 +101,7 @@ def main():
     ap.add_argument("path", help="path to a contract file (.txt / .md / .pdf)")
     ap.add_argument("--name", help="display name (defaults to filename)")
     ap.add_argument("--reject", action="store_true", help="reject at the approval gate")
+    ap.add_argument("--reviewer", default="CLI reviewer", help="name/role of the reviewer")
     args = ap.parse_args()
 
     text = read_contract_file(args.path)
@@ -110,7 +112,7 @@ def main():
         else {"decision": "approved", "notes": "CLI approved"}
     )
 
-    final, interrupted, _, _ = run_contract(text, name, decision=decision)
+    final, interrupted, _, _ = run_contract(text, name, decision=decision, reviewer=args.reviewer)
     print_report(final, interrupted)
 
 

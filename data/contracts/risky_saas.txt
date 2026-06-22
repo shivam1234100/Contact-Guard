@@ -1,21 +1,42 @@
-SAAS SUBSCRIPTION AGREEMENT
+SOFTWARE-AS-A-SERVICE SUBSCRIPTION AGREEMENT
 
-This SaaS Subscription Agreement is entered into by and between CloudVendor Inc and Customer Co, effective as of February 1, 2026.
+This Software-as-a-Service Subscription Agreement (this "Agreement") is made and entered into as of February 1, 2026 (the "Effective Date") by and between CloudVendor, Inc., a Delaware corporation ("Provider"), and Customer Co., a company organized under the laws of New York ("Customer").
 
-1. Limitation of Liability
-The Provider's liability under this Agreement shall be unlimited and uncapped, and the Provider shall not be limited in any amount for damages of any kind, including indirect and consequential damages.
+RECITALS
 
-2. Indemnification
-Customer shall indemnify, defend, and hold harmless Provider from any and all claims, damages, and losses of every kind arising out of Customer's use of the services, without limitation.
+WHEREAS, Provider operates a hosted software platform made available on a subscription basis; and
 
-3. Auto-Renewal
-This Agreement shall automatically renew for successive 36 month periods unless Customer provides written notice of non-renewal, and the renewal term shall continue on an evergreen basis.
+WHEREAS, Customer wishes to subscribe to and use the platform for its internal business operations;
 
-4. Data Protection
-Provider may process and store personal data of Customer's end users in order to provide and improve the services, including transferring such data to third parties.
+NOW, THEREFORE, the Parties agree as follows:
 
-5. Confidentiality
-Each party shall keep the other party's Confidential Information confidential during the term of this Agreement.
+1. Subscription and Access
+Provider grants Customer a non-exclusive, non-transferable right to access and use the hosted platform during the subscription term, solely for Customer's internal business purposes and subject to the terms of this Agreement.
 
-6. Governing Law
-This Agreement shall be governed by the laws of the State of New York.
+2. Fees and Payment
+Customer shall pay the subscription fees set forth in the applicable Order Form. All fees are invoiced annually in advance and are non-refundable. Provider may increase fees at any time in its sole discretion upon notice.
+
+3. Limitation of Liability
+Notwithstanding anything to the contrary, the Provider's liability under this Agreement shall be unlimited and uncapped, and Provider shall not be limited in any amount for any damages of any kind, including direct, indirect, and consequential damages, arising out of or relating to the services.
+
+4. Indemnification
+Customer shall indemnify, defend, and hold harmless Provider, its officers, directors, and affiliates from and against any and all claims, damages, losses, and expenses of every kind arising out of or relating to Customer's use of the services, without limitation and regardless of the theory of liability.
+
+5. Term and Auto-Renewal
+This Agreement commences on the Effective Date and automatically renews for successive 36 month periods on an evergreen basis, unless Customer provides written notice of non-renewal at least ninety (90) days prior to the end of the then-current term.
+
+6. Data Protection
+Provider may collect, process, and store personal data of Customer's end users in order to provide and improve the services, and may transfer such personal data to its affiliates and third-party subprocessors located in any jurisdiction, as Provider determines appropriate.
+
+7. Confidentiality
+Each Party shall keep the other Party's Confidential Information confidential during the term of this Agreement and shall use it only as necessary to perform under this Agreement.
+
+8. Governing Law
+This Agreement shall be governed by and construed in accordance with the laws of the State of New York, without regard to its conflict-of-laws principles.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+PROVIDER: CloudVendor, Inc.             CUSTOMER: Customer Co.
+By: ______________________              By: ______________________
+Name:                                   Name:
+Title:                                  Title:

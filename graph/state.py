@@ -145,6 +145,20 @@ class Approval(BaseModel):
 
 
 # --------------------------------------------------------------------------- #
+# Audit record (written by the supervisor's `record` step)
+# --------------------------------------------------------------------------- #
+class DecisionRecord(BaseModel):
+    contract: str
+    decision: Literal["approved", "edited", "rejected", "blocked"]
+    reviewer: str = "system"
+    overall_risk: Optional[RiskLevel] = None
+    route: Optional[str] = None
+    redlines: int = 0
+    timestamp: str
+    audit_steps: int = 0
+
+
+# --------------------------------------------------------------------------- #
 # The single shared state object
 # --------------------------------------------------------------------------- #
 class ContractState(TypedDict, total=False):
@@ -157,6 +171,7 @@ class ContractState(TypedDict, total=False):
     # --- inputs ---
     contract_text: str
     contract_name: str
+    reviewer: str  # who is running the review (from the UI login); defaults set by callers
 
     # --- pipeline artifacts ---
     parsed: Optional[ParsedContract]
@@ -171,6 +186,7 @@ class ContractState(TypedDict, total=False):
     route: str  # human-readable route label, e.g. "REVIEW_REDLINE", "BLOCKED_INJECTION"
     needs_senior_review: bool
     blocked: bool
+    record_path: Optional[str]  # where the audit record was archived
 
     # --- observability ---
     audit_log: Annotated[List[str], operator.add]

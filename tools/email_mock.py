@@ -39,3 +39,34 @@ def export_redlines(contract_name: str, redlines: List[dict]) -> dict:
     path = OUTBOX / f"redlines_{_safe(contract_name)}_{_ts()}.json"
     path.write_text(json.dumps(redlines, indent=2), encoding="utf-8")
     return {"channel": "redline_export", "count": len(redlines), "path": str(path)}
+
+
+def send_decision_notice(
+    to: str, contract_name: str, decision: str, redlines: int = 0, reason: str = ""
+) -> dict:
+    """Email the contract sender the review outcome (approved or rejected)."""
+    if decision in ("approved", "edited"):
+        subject = f"Contract review complete — APPROVED with changes: {contract_name}"
+        body = (
+            f"Dear sender,\n\nYour contract '{contract_name}' has been reviewed and "
+            f"approved to proceed with {redlines} proposed redline(s), which are "
+            "attached for your acceptance.\n\nBest regards,\nContracts Team"
+        )
+    else:
+        subject = f"Contract review complete — NOT APPROVED: {contract_name}"
+        body = (
+            f"Dear sender,\n\nYour contract '{contract_name}' has been reviewed and "
+            "we are unable to proceed as currently drafted."
+            + (f" Reason: {reason}." if reason else "")
+            + "\n\nWe're happy to discuss revisions.\n\nBest regards,\nContracts Team"
+        )
+    return send_email(to, subject, body)
+
+
+def archive_record(record: dict) -> dict:
+    """Write a compliance audit record to outbox/ and return a receipt."""
+    OUTBOX.mkdir(exist_ok=True)
+    name = record.get("contract", "contract")
+    path = OUTBOX / f"record_{_safe(name)}_{_ts()}.json"
+    path.write_text(json.dumps(record, indent=2), encoding="utf-8")
+    return {"channel": "audit_record", "path": str(path)}

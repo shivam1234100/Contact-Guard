@@ -17,20 +17,30 @@ A LangGraph `StateGraph[ContractState]` compiled with an in-memory checkpointer
 (required for interrupts). Nodes:
 
 ```
-START → intake ─(blocked?)→ blocked → END
-              └→ retrieval → analysis → guardrail ─(blocked?)→ blocked → END
-                                              └→ redline → human_approval ⏸ → send → END
+START → session_start → intake ─(blocked?)→ blocked → record → END
+              └→ retrieval → analysis → guardrail ─(blocked?)→ blocked → record → END
+                              └→ redline → human_approval ⏸
+                                     ├─(approved)→ send → notify → record → END
+                                     └─(rejected)──────→ notify → record → END
 ```
 
+The **5 agents** are `intake`, `retrieval`, `analysis`, `guardrail`, `redline`.
+The other nodes are **supervisor / orchestration steps** (the architecture is
+still 5 agents):
+
+- **`session_start`** opens the review session and stamps the signed-in reviewer.
 - **Conditional edges** (`graph/routing.py`):
   - `route_after_intake`: malformed/empty input → `blocked`, else `retrieval`.
   - `route_after_guardrail`: integrity violation (injection) → `blocked`, else `redline`.
+  - `route_after_decision`: approved/edited → `send`, rejected → `notify`.
 - **`human_approval`** calls `interrupt(payload)`; execution pauses and the
   caller resumes with `Command(resume=decision)`. This is the mandatory HITL.
-- **`send`** is the only node that performs external actions, and only if the
-  recorded approval is `approved`/`edited`.
-- **`blocked`** is a terminal refusal node that records *why* and confirms no
-  action was taken.
+- **`send`** performs the external action (mock send of the redline package), only
+  if the recorded approval is `approved`/`edited`.
+- **`notify`** emails the contract sender the outcome on BOTH approve and reject.
+- **`record`** archives a `DecisionRecord` audit entry for every outcome
+  (approved / rejected / blocked).
+- **`blocked`** is a refusal node that records *why* and confirms no action taken.
 
 ## 3. Shared state & structured outputs
 

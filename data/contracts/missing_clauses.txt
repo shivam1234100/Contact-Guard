@@ -1,12 +1,33 @@
 CONSULTING SERVICES AGREEMENT
 
-This Consulting Services Agreement is entered into by and between Gamma Inc and Delta Co, effective as of April 1, 2026.
+This Consulting Services Agreement (this "Agreement") is entered into as of April 1, 2026 (the "Effective Date") by and between Gamma Inc., a Delaware corporation ("Consultant"), and Delta Co., a Texas corporation ("Client").
 
-1. Services
-Provider will perform the consulting services described in Exhibit A, on a best-efforts basis, at the times mutually agreed by the parties.
+RECITALS
 
-2. Payment
-Customer shall pay the fees set out in Exhibit A within net thirty (30) days of each invoice date.
+WHEREAS, Consultant provides management consulting and advisory services; and
+
+WHEREAS, Client wishes to retain Consultant to perform the services described herein;
+
+NOW, THEREFORE, the Parties agree as follows:
+
+1. Engagement and Services
+Client retains Consultant to perform the management consulting services described in Exhibit A (the "Services"). Consultant shall perform the Services on a best-efforts basis at times mutually agreed by the Parties and shall determine the manner and means by which the Services are performed.
+
+2. Fees and Payment
+In consideration of the Services, Client shall pay Consultant the fees set forth in Exhibit A. Consultant shall invoice Client monthly, and Client shall pay all invoiced amounts within net thirty (30) days of the invoice date.
 
 3. Expenses
-Customer shall reimburse Provider for pre-approved travel expenses incurred in performing the services.
+Client shall reimburse Consultant for reasonable, pre-approved travel and out-of-pocket expenses incurred in performing the Services, provided that Consultant submits appropriate receipts.
+
+4. Term
+This Agreement commences on the Effective Date and continues for a period of one (1) year, after which it may be renewed only by the mutual written agreement of the Parties.
+
+5. Independent Contractor
+Consultant is an independent contractor and not an employee, partner, or agent of Client. Consultant is solely responsible for its own taxes, insurance, and benefits, and has no authority to bind Client.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+CONSULTANT: Gamma Inc.                  CLIENT: Delta Co.
+By: ______________________              By: ______________________
+Name:                                   Name:
+Title:                                  Title:
