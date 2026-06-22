@@ -116,17 +116,26 @@ def send_node(state: ContractState) -> dict:
 
 
 def blocked_node(state: ContractState) -> dict:
-    """Terminal refusal node: records why and confirms no action was taken."""
+    """Refusal node: records why, notifies the sender of the flagged status, and
+    confirms no external action was taken. (Notifying here — rather than routing
+    into the shared `notify` node — keeps the graph topology simple/robust.)"""
     flags = state.get("compliance", [])
     errors = state.get("errors", [])
     reason = state.get("route", "BLOCKED")
-    return {
-        "audit_log": [
-            f"[blocked] pipeline halted ({reason}); "
-            f"{len(flags)} compliance flag(s), {len(errors)} error(s); "
-            "NO external action taken."
-        ]
-    }
+    logs = [
+        f"[blocked] pipeline halted ({reason}); "
+        f"{len(flags)} compliance flag(s), {len(errors)} error(s); "
+        "NO external action taken."
+    ]
+    report = state.get("risk_report")
+    rec = send_decision_notice(
+        state.get("sender_email") or "sender@counterparty.example.com",
+        state.get("contract_name", "contract"),
+        "blocked",
+        reason=report.summary if report else "",
+    )
+    logs.append(f"[notify] sender emailed: blocked -> {rec['to']} (saved {rec['path']})")
+    return {"audit_log": logs}
 
 
 def session_start_node(state: ContractState) -> dict:
@@ -246,8 +255,8 @@ def _new_builder() -> StateGraph:
         "human_approval", route_after_decision, {"send": "send", "notify": "notify"}
     )
     builder.add_edge("send", "notify")
-    builder.add_edge("blocked", "notify")
     builder.add_edge("notify", "record")
+    builder.add_edge("blocked", "record")
     builder.add_edge("record", END)
     return builder
 
