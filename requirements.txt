@@ -1,24 +1,27 @@
-# --- Core orchestration ---
-langgraph>=0.2.55
-langchain-core>=0.3.0
+# Pinned to the exact versions verified locally (eval 6/6 + Streamlit AppTest),
+# so the deployed app behaves identically to local. Unpinned ranges previously
+# let the host resolve a different langgraph build that broke graph.invoke().
 
-# --- LLM providers (lazy-imported; install the one you use) ---
-langchain-openai>=0.2.0
-openai>=1.40.0
-# Optional alternative provider:
-langchain-anthropic>=0.2.0
+# --- Core orchestration ---
+langgraph==1.2.6
+langgraph-checkpoint==4.1.1
+langchain-core==1.4.8
+
+# --- LLM provider (OpenAI default; lazy-imported, only used in live mode) ---
+langchain-openai==1.3.2
+openai==2.43.0
 
 # --- Schemas / structured output ---
-pydantic>=2.7.0
+pydantic==2.13.4
 
 # --- RAG / math ---
-numpy>=1.26.0
+numpy==2.4.6
 
 # --- Document parsing ---
-pypdf>=4.2.0
+pypdf==6.13.3
 
 # --- Demo UI ---
-streamlit>=1.36.0
+streamlit==1.58.0
 
 # --- Config / observability ---
 python-dotenv>=1.0.0
