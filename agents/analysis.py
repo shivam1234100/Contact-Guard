@@ -5,7 +5,7 @@ playbook, recommendation, rationale), then aggregates into a
 ``ContractRiskReport`` with an overall risk score and a list of missing critical
 clauses. The aggregation is deterministic so routing and evaluation are
 reproducible; only the *per-clause judgement* uses the LLM when one is wired up
-(falling back to transparent heuristics otherwise). Owner: M4 (evaluation).
+(falling back to transparent heuristics otherwise).
 """
 from __future__ import annotations
 

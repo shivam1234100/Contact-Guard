@@ -13,7 +13,7 @@ Graph shape (5 agents + supervisor orchestration steps):
 
 The orchestration nodes (``session_start``, ``human_approval``, ``send``,
 ``notify``, ``record``, ``blocked``) are the supervisor's responsibility, not an
-agent's — the architecture stays at 5 agents. Owner: M1 (tech lead).
+agent's — the architecture stays at 5 agents.
 """
 from __future__ import annotations
 

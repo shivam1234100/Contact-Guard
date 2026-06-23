@@ -13,7 +13,7 @@ Three jobs, all grounded in ``policy.md`` via RAG:
 
 Only integrity violations (injection) block. Genuinely risky-but-legitimate
 contracts are *flagged and escalated*, then sent to the human approval gate —
-the human decides, not the model. Owner: M5 (safety).
+the human decides, not the model.
 """
 from __future__ import annotations
 

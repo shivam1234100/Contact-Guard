@@ -4,7 +4,6 @@ Grounds every clause in the company **playbook** via vector retrieval, and uses
 a second tool (``web_search``) to sanity-check the governing-law jurisdiction.
 The evidence snippets it attaches are what the analysis and guardrail agents
 cite — retrieval here genuinely improves grounding, it is not bolted on.
-Owner: M3 (retrieval + external tools).
 """
 from __future__ import annotations
 

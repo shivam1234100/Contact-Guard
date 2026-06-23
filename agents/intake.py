@@ -3,7 +3,7 @@
 Turns the raw uploaded contract into a structured ``ParsedContract``. Parsing is
 deterministic (an I/O concern), and malformed input fails *gracefully*: instead
 of crashing the graph, it sets ``blocked`` + an error and lets the supervisor
-route straight to the blocked node. Owner: M2 (I/O boundary).
+route straight to the blocked node.
 """
 from __future__ import annotations
 

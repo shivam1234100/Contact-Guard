@@ -3,7 +3,7 @@
 Drafts the *proposed* changes: a redline for every clause the analysis wants to
 fix, plus a counterparty negotiation email and an internal summary memo. It
 prepares the package only — it never sends. Sending happens in a separate node,
-and only after a human approves at the interrupt gate. Owner: M2 (I/O boundary).
+and only after a human approves at the interrupt gate.
 """
 from __future__ import annotations
 

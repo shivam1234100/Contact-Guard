@@ -1,6 +1,6 @@
 # ContractGuard — Multi-Agent Contract-Review Copilot
 
-> Capstone · *Multi-Agent Orchestration [AI/ML]* · Team size 5 · Built on **LangGraph**
+> A personal project by **Shivam Tiwari** · Multi-agent AI · Built on **LangGraph**
 
 A legal/procurement team uploads a contract. ContractGuard parses it into
 structured clauses, **grounds every clause in the company playbook (RAG)**,
@@ -205,24 +205,19 @@ contractguard/
 │   └── streamlit_app.py       · demo UI with the approve/reject gate
 ├── outbox/                    · mock "sent" emails + exported redlines (gitignored)
 └── docs/
-    ├── ARCHITECTURE.md
-    └── individual_contributions/   · one .md per member
+    └── ARCHITECTURE.md
 ```
 
 ---
 
-## How this maps to the rubric (100 marks)
+## Highlights
 
-| Criterion | Weight | Where |
-|---|---|---|
-| Problem selection & clarity | 10% | Real legal pipeline, not a chatbot — see top of README |
-| Multi-agent architecture | 20% | 5 specialized agents + supervisor, clean handoffs |
-| LangGraph implementation | 15% | `StateGraph`, conditional edges, checkpointer, `interrupt()` |
-| Tool use & integrations | 10% | parser, vector store (RAG), web search, mock email |
-| State, memory, context | 10% | one `ContractState`, Pydantic at every handoff, reducers, audit log |
-| Evaluation & debugging | 10% | 6 cases incl. injection + malformed, `run_eval.py`, audit/LangSmith traces |
-| Guardrails & HITL | 10% | injection defense, policy refusal, mandatory approval interrupt |
-| Demo quality | 10% | runs end-to-end on samples; Streamlit approve/reject gate |
-| Individual contribution | 15% | `docs/individual_contributions/` — one component per member |
+- **Genuine multi-agent design** — 5 specialized agents + a routing supervisor with clean handoffs.
+- **Correct LangGraph** — `StateGraph`, conditional edges, checkpointer, `interrupt()`.
+- **Meaningful tools + RAG** — document parser, vector store (RAG), web search, mock email.
+- **Clean state** — one `ContractState`, Pydantic at every handoff, reducers, full audit log.
+- **Evaluation harness** — 6 scenarios incl. prompt-injection + malformed input (`run_eval.py`).
+- **Guardrails + human-in-the-loop** — injection defense, policy-grounded refusal, mandatory approval gate.
+- **Demo-ready** — runs end-to-end with sample inputs; Streamlit UI with the approve/reject gate.
 
 See **`docs/ARCHITECTURE.md`** for design detail.
