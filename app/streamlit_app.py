@@ -24,8 +24,23 @@ from langgraph.types import Command
 
 from graph.build import build_graph
 from llm import llm_mode
-from run import initial_state
 from tools.contract_parser import read_contract_file
+
+
+def _make_state(text: str, name: str, reviewer: str, sender_email: str) -> dict:
+    """Build the initial graph state. Defined here (in the always-reloaded app
+    file) rather than imported, so the app never depends on a stale helper
+    module on the host."""
+    return {
+        "contract_text": text,
+        "contract_name": name,
+        "reviewer": reviewer or "reviewer",
+        "sender_email": sender_email or "sender@counterparty.example.com",
+        "audit_log": [],
+        "errors": [],
+        "compliance": [],
+        "approvals": [],
+    }
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTRACTS_DIR = os.path.join(ROOT, "data", "contracts")
@@ -61,7 +76,7 @@ def _run_until_gate(text: str, name: str, sender_email: str):
         reviewer = st.session_state.get("reviewer", "reviewer")
         graph = build_graph()
         config = {"configurable": {"thread_id": f"{name}-{uuid.uuid4().hex[:8]}"}}
-        graph.invoke(initial_state(text, name, reviewer, sender_email), config)
+        graph.invoke(_make_state(text, name, reviewer, sender_email), config)
         snap = graph.get_state(config)
         st.session_state.graph = graph
         st.session_state.config = config
