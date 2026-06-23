@@ -2,6 +2,8 @@
 
 > A personal project by **Shivam Tiwari** · Multi-agent AI · Built on **LangGraph**
 
+**🔗 Live demo:** https://contact-guard-hntzscvpgtmlbubqtfoxry.streamlit.app
+
 A legal/procurement team uploads a contract. ContractGuard parses it into
 structured clauses, **grounds every clause in the company playbook (RAG)**,
 scores legal/commercial risk, runs a **compliance + prompt-injection guardrail**,
